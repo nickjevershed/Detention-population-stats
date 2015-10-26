@@ -102,5 +102,71 @@ for url in urlList:
 					data['Maribyrnong IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
 					break				
 
-	print data				
+
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if ("perth idc" in elText) or ("perth immigration detention" in elText):
+			print "Perth IDC"
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Perth IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break							
 	
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if ("villawood idc" in elText) or ("villawood immigration detention" in elText):
+			print "Villawood IDC"
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Villawood IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break				
+
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if ("yongah hill idc" in elText) or ("yongah hill immigration" in elText):
+			print "Yongah Hill IDC"
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Yongah Hill IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break						
+
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if ("curtin immigration detention centre" in elText) or ("curtin idc" in elText):
+			print "Curtin IDC"
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Curtin Immigration Detention Centre'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break				
+
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if ("curtin immigration detention centre" in elText) or ("curtin idc" in elText):
+			print "Curtin IDC"
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Curtin Immigration Detention Centre'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break	
+
+
+	for i, el in enumerate(pages[statsPage]):
+		elText = cleanString(gettext_with_bi_tags(el))
+		if (elText == "total" or elText == "total facility" or elText == "total facility and apod") and (int(el.attrib['top']) > 500):
+
+			print "Total onshore"
+			# print el.attrib
+			# print gettext_with_bi_tags(el)
+			for total in totalColumnPos:
+				if total > i:
+					#print total
+					data['Total onshore'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					break				
+
+	print data
+
+

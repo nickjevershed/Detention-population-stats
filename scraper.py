@@ -14,7 +14,9 @@ urlList2 = ['https://www.border.gov.au/ReportsandPublications/Documents/statisti
 
 for url in mainPageDom.cssselect('.ym-gbox-left a'):
 	if url.attrib['href'] != "/":
-		urlList.append("https://www.border.gov.au" + url.attrib['href'])
+		date = url.text.split("for ")[1].split(" (")[0]
+		link = "https://www.border.gov.au/" + url.attrib['href']
+		urlList.append({"date":date,"link":link})
 
 #function to get text elements 
 
@@ -33,6 +35,9 @@ def gettext_with_bi_tags(el):
 def cleanString(s):
 	return s.replace("<b>","").replace("</b>","").replace('\n', ' ').lower().replace(u"\u00A0", " ").strip()
 
+def cleanNumber(n):
+	return n.replace("<b>","").replace("</b>","").replace('\n', ' ').replace(",","").replace(u"\u00A0", " ").strip()
+
 #go through the list of urls
 
 def getStatsPage(pages):
@@ -49,8 +54,10 @@ def getStatsPage(pages):
 
 for url in urlList:
 	data = {}
-	print "getting " + url
-	pdfData = requests.get(url).content
+	data['date'] = url['date']
+	data['link'] = url['link']
+	print "getting", url['link']
+	pdfData = requests.get(url['link']).content
 	xmlData = scraperwiki.pdftoxml(pdfData)
 	parser = lxml.etree.XMLParser(recover=True)
 	root = lxml.etree.XML(xmlData, parser)
@@ -89,7 +96,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Christmas Island IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Christmas Island IDC'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break
 	
 	for i, el in enumerate(pages[statsPage]):
@@ -99,7 +106,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Maribyrnong IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Maribyrnong IDC'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break				
 
 
@@ -110,7 +117,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Perth IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Perth IDC'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break							
 	
 	for i, el in enumerate(pages[statsPage]):
@@ -120,7 +127,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Villawood IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Villawood IDC'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break				
 
 	for i, el in enumerate(pages[statsPage]):
@@ -130,7 +137,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Yongah Hill IDC'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Yongah Hill IDC'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break						
 
 	for i, el in enumerate(pages[statsPage]):
@@ -140,7 +147,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Curtin Immigration Detention Centre'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Curtin Immigration Detention Centre'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break				
 
 	for i, el in enumerate(pages[statsPage]):
@@ -150,7 +157,7 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Curtin Immigration Detention Centre'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Curtin Immigration Detention Centre'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break	
 
 
@@ -164,9 +171,10 @@ for url in urlList:
 			for total in totalColumnPos:
 				if total > i:
 					#print total
-					data['Total onshore'] = cleanString(gettext_with_bi_tags(pages[statsPage][total]))
+					data['Total onshore'] = cleanNumber(gettext_with_bi_tags(pages[statsPage][total]))
 					break				
 
+	
 	print data
-
+	scraperwiki.sqlite.save(unique_keys=["date","link"], data=data, table_name="detentionStats")
 
